@@ -1,6 +1,6 @@
 from utils.common import read_config
 from utils.data_mgmt import get_data
-from utils.model import create_model,save_model
+from utils.model import create_model,save_model,save_plot
 import argparse
 import os
 
@@ -25,14 +25,23 @@ def training(config_path):
     history = model.fit(X_train,y_train,epochs=EPOCHS,validation_data=VALIDATION_SET)
 
     artifacts_dir = config["artifacts"]["artifacts_dir"]
-    model_dir = config["artifacts"]["model_dir"]
 
+    # Model Saving
+    model_dir = config["artifacts"]["model_dir"]
     model_dir_path = os.path.join(artifacts_dir,model_dir)
     os.makedirs(model_dir_path,exist_ok=True)
-
     model_name = config["artifacts"]["model_name"]
 
     save_model(model,model_name,model_dir_path)
+
+    # Plot Saving
+    plot_dir = config["artifacts"]["plot_dir"]
+    plot_dir_path = os.path.join(artifacts_dir,plot_dir)
+    os.makedirs(plot_dir_path,exist_ok=True)
+    plot_name = config["artifacts"]["plot_name"]
+
+    data = history.history
+    save_plot(data, plot_name,plot_dir_path)
 
 
 if __name__ == '__main__':
